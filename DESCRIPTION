@@ -1,0 +1,31 @@
+Package: ZarrDataFrame
+Version: 0.0.0
+Date: 2024-03-11
+Title: Bioconductor-friendly Bindings for Zarr
+Description: 
+    Implements bindings for zarr store that are compatible with Bioconductor
+    S4 data structures, namely the DataFrame and DelayedArray. This allows 
+    Zarr-backed data to be easily used as data frames with arbitrary sets of columns
+Authors@R:
+    c(
+        person("Artur", "Manukyan", role=c("aut", "cre"), email="artur-man@hotmail.com")
+    )
+License: MIT + file LICENSE
+Depends:
+    DelayedArray,
+    S4Vectors
+Imports: 
+    stats,
+    utils,
+    methods,
+    BiocGenerics,
+    pizzarr,
+    ZarrArray
+Remotes:
+  BIMSBbioinfo/ZarrArray, keller-mark/pizzarr
+Suggests:
+    testthat
+biocViews: DataRepresentation, Infrastructure, Software
+VignetteBuilder: knitr
+RoxygenNote: 7.3.2
+Encoding: UTF-8
