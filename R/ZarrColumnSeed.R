@@ -51,13 +51,13 @@ setMethod("path", "ZarrColumnSeed", function(object) object@path)
 
 #' @export
 #' @importFrom DelayedArray extract_array
-#' @importFrom pizzarr zarr_open_array
+#' @importFrom pizzarr zarr_open_array int
 setMethod("extract_array", "ZarrColumnSeed", function(x, index) {
     slice <- index[[1]]
     
     if (is.null(slice)) {
-      zarrarray <- pizzarr::zarr_open_array(store = x@path, path = paste0(x@name, "/", x@column), mode = "r")
-      output <- zarrarray$get_item("...")$data
+        zarrarray <- pizzarr::zarr_open_array(store = x@path, path = paste0(x@name, "/", x@column), mode = "r")
+        output <- zarrarray$get_item("...")$data
     } else if (length(slice) == 0) {
         output <- logical()
     } else {
@@ -73,7 +73,11 @@ setMethod("extract_array", "ZarrColumnSeed", function(x, index) {
             slice <- sort(slice)
             modified <- TRUE
         }
-
+        
+        # make python index
+        slice <- pizzarr::int(slice)
+        
+        # read
         zarrarray <- pizzarr::zarr_open_array(store = x@path, path = paste0(x@name, "/", x@column), mode = "r")
         output <- zarrarray$get_orthogonal_selection(list(slice))$data
         if (modified) {
@@ -103,7 +107,6 @@ ZarrColumnSeed <- function(path, name, column, type=NULL, length=NULL) {
           length <- zarrarray$get_shape()
         }
     } 
-    # print(type)
     new("ZarrColumnSeed", path=path, name=name, column=column, length=length, type=type)
 }
 
