@@ -19,13 +19,11 @@ Imports:
     utils,
     methods,
     BiocGenerics,
-    pizzarr,
-    ZarrArray
-Remotes:
-  BIMSBbioinfo/ZarrArray, keller-mark/pizzarr
+    Rarr
 Suggests:
-    testthat
+    testthat (>= 3.0.0)
 biocViews: DataRepresentation, Infrastructure, Software
 VignetteBuilder: knitr
 RoxygenNote: 7.3.2
 Encoding: UTF-8
+Config/testthat/edition: 3

@@ -51,13 +51,11 @@ setMethod("path", "ZarrColumnSeed", function(object) object@path)
 
 #' @export
 #' @importFrom DelayedArray extract_array
-#' @importFrom pizzarr zarr_open_array int
 setMethod("extract_array", "ZarrColumnSeed", function(x, index) {
     slice <- index[[1]]
-    
     if (is.null(slice)) {
-        zarrarray <- pizzarr::zarr_open_array(store = x@path, path = paste0(x@name, "/", x@column), mode = "r")
-        output <- zarrarray$get_item("...")$data
+        zarrarray <- Rarr::ZarrArray(zarr_array_path = file.path(x@path, x@name, x@column))
+        output <- realize(zarrarray)
     } else if (length(slice) == 0) {
         output <- logical()
     } else {
@@ -74,12 +72,9 @@ setMethod("extract_array", "ZarrColumnSeed", function(x, index) {
             modified <- TRUE
         }
         
-        # make python index
-        slice <- pizzarr::int(slice)
-        
         # read
-        zarrarray <- pizzarr::zarr_open_array(store = x@path, path = paste0(x@name, "/", x@column), mode = "r")
-        output <- zarrarray$get_orthogonal_selection(list(slice))$data
+        zarrarray <- Rarr::ZarrArray(zarr_array_path = file.path(x@path, x@name, x@column))
+        output <- zarrarray[slice]
         if (modified) {
             m <- match(original, slice)
             output <- output[m]
@@ -96,15 +91,14 @@ setMethod("extract_array", "ZarrColumnSeed", function(x, index) {
 #' @export
 #' @rdname ZarrColumnSeed
 #' @importFrom DelayedArray type
-#' @importFrom pizzarr zarr_open_array slice
 ZarrColumnSeed <- function(path, name, column, type=NULL, length=NULL) {
     if (is.null(type) || is.null(length)) {
-      zarrarray <- pizzarr::zarr_open_array(store = path, path = paste0(name, "/", column), mode = "r")
+      zarrarray <- Rarr::ZarrArray(zarr_array_path = file.path(path, name, column))
         if (is.null(type)){ 
-          type <-  DelayedArray::type(zarrarray$get_item(list(pizzarr::slice(1,1)))$data)
+          type <-  DelayedArray::type(zarrarray)
         }
         if (is.null(length)) {
-          length <- zarrarray$get_shape()
+          length <- dim(zarrarray)
         }
     } 
     new("ZarrColumnSeed", path=path, name=name, column=column, length=length, type=type)
