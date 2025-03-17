@@ -51,8 +51,7 @@ ZarrDataFrame <- function(tab, name, columns=NULL, nrows=NULL) {
             nrows <- length(tab[[1]])
         }
     } 
-    path <- DelayedArray::path(tab[[1]])
-    name <- dirname(tab[[1]]@seed@name)
+    path <- gsub(paste0("/", file.path(name,columns[1]), "/$"), "", DelayedArray::path(tab[[1]]))
     new("ZarrDataFrame", path=path, name = name, columns=columns, nrows=nrows)
 }
 
@@ -293,9 +292,8 @@ setMethod("cbind", "ZarrDataFrame", cbind.ZarrDataFrame)
 setMethod("as.data.frame", "ZarrDataFrame", function(x, row.names = NULL, optional = FALSE, ...) {
   df <- make_zero_col_DFrame(x@nrows)
   for (i in seq_along(x@columns)) {
-    print(paste0(x@name, "/", x@columns[i]))
-    zarrarray <- pizzarr::zarr_open_array(store = x@path, path = paste0(x@name, "/", x@columns[i]), mode = "r")
-    df[[as.character(i)]] <- zarrarray$get_item("...")$data
+    zarrarray <- Rarr::ZarrArray(zarr_array_path = file.path(x@path, x@name, x@columns[i]))
+    df[[as.character(i)]] <- realize(zarrarray)
   }
   colnames(df) <- x@columns
   mcols(df) <- mcols(x, use.names=FALSE)
