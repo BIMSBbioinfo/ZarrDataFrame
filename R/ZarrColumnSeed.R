@@ -50,12 +50,12 @@ setMethod("type", "ZarrColumnSeed", function(x) x@type)
 setMethod("path", "ZarrColumnSeed", function(object) object@path)
 
 #' @export
-#' @importFrom DelayedArray extract_array
+#' @importFrom DelayedArray extract_array realize
 setMethod("extract_array", "ZarrColumnSeed", function(x, index) {
     slice <- index[[1]]
     if (is.null(slice)) {
         zarrarray <- Rarr::ZarrArray(zarr_array_path = file.path(x@path, x@name, x@column))
-        output <- realize(zarrarray)
+        output <- DelayedArray::realize(zarrarray)
     } else if (length(slice) == 0) {
         output <- logical()
     } else {
