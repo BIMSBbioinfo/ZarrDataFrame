@@ -50,11 +50,12 @@ setMethod("type", "ZarrColumnSeed", function(x) x@type)
 setMethod("path", "ZarrColumnSeed", function(object) object@path)
 
 #' @export
+#' @importFrom ZarrArray ZarrArray
 #' @importFrom DelayedArray extract_array realize
 setMethod("extract_array", "ZarrColumnSeed", function(x, index) {
     slice <- index[[1]]
     if (is.null(slice)) {
-        zarrarray <- Rarr::ZarrArray(zarr_array_path = file.path(x@path, x@name, x@column))
+        zarrarray <- ZarrArray::ZarrArray(zarr_path = file.path(x@path, x@name, x@column))
         output <- DelayedArray::realize(zarrarray)
     } else if (length(slice) == 0) {
         output <- logical()
@@ -73,7 +74,7 @@ setMethod("extract_array", "ZarrColumnSeed", function(x, index) {
         }
         
         # read
-        zarrarray <- Rarr::ZarrArray(zarr_array_path = file.path(x@path, x@name, x@column))
+        zarrarray <- ZarrArray::ZarrArray(zarr_path = file.path(x@path, x@name, x@column))
         output <- zarrarray[slice]
         if (modified) {
             m <- match(original, slice)
@@ -93,7 +94,7 @@ setMethod("extract_array", "ZarrColumnSeed", function(x, index) {
 #' @importFrom DelayedArray type
 ZarrColumnSeed <- function(path, name, column, type=NULL, length=NULL) {
     if (is.null(type) || is.null(length)) {
-      zarrarray <- Rarr::ZarrArray(zarr_array_path = file.path(path, name, column))
+      zarrarray <- ZarrArray::ZarrArray(zarr_path = file.path(path, name, column))
         if (is.null(type)){ 
           type <-  DelayedArray::type(zarrarray)
         }

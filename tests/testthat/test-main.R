@@ -1,4 +1,5 @@
 library(Rarr)
+library(ZarrArray)
 
 # zarr
 dir.create(td <- tempfile())
@@ -30,9 +31,9 @@ test_that("create metadata", {
     }
     cur_column <- as.array(cur_column)
     meta.data_list[[colnames(metadata)[i]]] <- 
-      Rarr::writeZarrArray(cur_column, 
-                           zarr_array_path = file.path(output_zarr, paste0("assay", "/", colnames(metadata)[i])), 
-                           chunk_dim = min(length(cur_column), 2000), nchar = nchar)
+      ZarrArray::writeZarrArray(cur_column, 
+                           zarr_path = file.path(output_zarr, paste0("assay", "/", colnames(metadata)[i])), 
+                           chunkdim = min(length(cur_column), 2000), nchar = nchar)
   }
   metadata_large <- ZarrDataFrame::ZarrDataFrame(meta.data_list, name = "assay", columns = names(meta.data_list))
   

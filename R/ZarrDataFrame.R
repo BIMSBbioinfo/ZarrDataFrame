@@ -288,12 +288,13 @@ setMethod("cbind", "ZarrDataFrame", cbind.ZarrDataFrame)
     df
 }
 
+#' @importFrom ZarrArray ZarrArray
 #' @importFrom DelayedArray realize
 #' @export
 setMethod("as.data.frame", "ZarrDataFrame", function(x, row.names = NULL, optional = FALSE, ...) {
   df <- make_zero_col_DFrame(x@nrows)
   for (i in seq_along(x@columns)) {
-    zarrarray <- Rarr::ZarrArray(zarr_array_path = file.path(x@path, x@name, x@columns[i]))
+    zarrarray <- ZarrArray::ZarrArray(zarr_path = file.path(x@path, x@name, x@columns[i]))
     df[[as.character(i)]] <- DelayedArray::realize(zarrarray)
   }
   colnames(df) <- x@columns
