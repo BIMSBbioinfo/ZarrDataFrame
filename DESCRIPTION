@@ -19,7 +19,8 @@ Imports:
     utils,
     methods,
     BiocGenerics,
-    Rarr
+    Rarr,
+    ZarrArray
 Suggests:
     testthat (>= 3.0.0),
     knitr
